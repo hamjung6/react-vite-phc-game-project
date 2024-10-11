@@ -16,11 +16,18 @@ const LottoPage = () => {
 
   const [nums, setNums] = useState(setNumbers);
 
+  const onClick = () => {
+    setNums(setNumbers());
+  };
+
   return (
     <div className="container">
-      <div className="row mt-sm-5">
+      <div className="row mt-sm-5" onClick={onClick}>
         {nums && nums.map((num) => <LottoBall lottoNum={num}></LottoBall>)}
       </div>
+      <button type="button" onClick={onClick}>
+        한번더
+      </button>
     </div>
   );
 };
