@@ -3,6 +3,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./../App";
 import LottoBall from "../components/lotto/LottoBall";
 import LottoPage from "../components/pages/LottoPage";
+import RspPage from "../components/pages/RspPage";
 
 const routes = [
   {
@@ -13,7 +14,7 @@ const routes = [
       {
         path: "/",
         loader: () => "로또",
-        element: <LottoPage />,
+        element: <RspPage />,
       },
     ],
   },
