@@ -1,24 +1,24 @@
 import React, { useEffect, useState } from "react";
-import boardService from "../../services/BoardService";
 import { Link } from "react-router-dom";
+import boardService from "../../services/BoardService";
 
 const BoardListPage = () => {
   const [boards, setBoards] = useState([]);
 
-  // 정리하면 아래와 같다.
+  /*
+  useEffect(() => {
+    // 매 렌더링마다 실행
+  });
 
-  // useEffect(() => {
-  //   // 매 렌더링마다 실행
-  // });
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링된 실행
+  }, []);
 
-  // useEffect(() => {
-  //   // 컴포넌트가 처음 렌더링된 실행
-  // }, []);
-
-  // useEffect(() => {
-  //   // 컴포넌트가 처음 렌더링된 이후 실행
-  //   // a나 b가 변경되어 컴포넌트가 재렌더링된 이후 실행
-  // }, [a, b]);
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링된 이후 실행
+    // a나 b가 변경되어 컴포넌트가 재렌더링된 이후 실행
+  }, [a, b]);
+  */
 
   useEffect(() => {
     console.log("use Effective 실행");
@@ -32,6 +32,23 @@ const BoardListPage = () => {
         console.log(response);
         setBoards(response.data.boards);
       })
+
+      .catch((e) => {
+        console.log(e);
+      });
+  };
+
+  const deleteBoard = (e) => {
+    const { name, value } = e.target;
+    console.log(name + "::" + value);
+
+    boardService
+      .remove(value)
+      .then((respose) => {
+        console.log(respose);
+        initBoards();
+      })
+
       .catch((e) => {
         console.log(e);
       });
@@ -47,16 +64,16 @@ const BoardListPage = () => {
           <a target="_blank" href="https://datatables.net">
             official DataTables documentation
           </a>
-          .
         </p>
 
-        {/* <!-- DataTales Example --> */}
+        {/* DataTales Example */}
         <div className="card shadow mb-4">
           <div className="card-header py-3">
             <h6 className="m-0 font-weight-bold text-primary">
               DataTables Example
             </h6>
           </div>
+
           <div className="card-body">
             <div className="table-responsive">
               <table
@@ -93,7 +110,7 @@ const BoardListPage = () => {
                           <button
                             className="btn btn-success"
                             value={board.bid}
-                            // onClick={deleteBoard}
+                            onClick={deleteBoard}
                           >
                             삭제
                           </button>
@@ -103,6 +120,7 @@ const BoardListPage = () => {
                 </tbody>
               </table>
             </div>
+
             {/* 페이징           */}
             {/* <PaginationB5
             paging={paging}
