@@ -35,6 +35,9 @@ const BoardListPage = () => {
       .then((response) => {
         console.log(response);
         setBoards(response.data.boards);
+
+        console.log(response.data.page);
+        setPaging(response.data.page);
       })
 
       .catch((e) => {
@@ -128,7 +131,7 @@ const BoardListPage = () => {
             </div>
 
             {/* 페이징           */}
-            {<Pagingnation></Pagingnation>}
+            {<Pagingnation paging={paging}></Pagingnation>}
             <hr />
             <Link to="/boards/write">
               <button type="button" className="btn btn-primary">
