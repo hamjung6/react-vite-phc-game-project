@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import boardService from "../../services/BoardService";
+import Pagingnation from "./../board/Pagingnation";
 
 const BoardListPage = () => {
   const [boards, setBoards] = useState([]);
+  // http://192.168.0.10:8282/boards/list
+
+  const [paging, setPaging] = useState({});
 
   /*
   useEffect(() => {
@@ -124,10 +128,7 @@ const BoardListPage = () => {
             </div>
 
             {/* 페이징           */}
-            {/* <PaginationB5
-            paging={paging}
-            onClickPaging={onClickPaging}
-          ></PaginationB5> */}
+            {<Pagingnation></Pagingnation>}
             <hr />
             <Link to="/boards/write">
               <button type="button" className="btn btn-primary">
