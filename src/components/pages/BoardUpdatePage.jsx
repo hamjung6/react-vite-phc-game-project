@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import boardService from "../../services/BoardService";
-import { Navigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 
 const BoardUpdatePage = () => {
   const initBoardState = {
@@ -9,20 +9,14 @@ const BoardUpdatePage = () => {
     bcontent: "",
   };
 
-  // path: "/boards/:bid/:name",
-
-  // path: "/boards/:bid",
-  // loader: () => "글업데이트",
-  // element: <BoardUpdatePage />,
-
   const { bid } = useParams();
 
   const [board, setBoard] = useState(initBoardState);
 
-  // Redirect를 위한 처리
-  const [submitted, setSubmitted] = useState(false);
+  //redirect를 위한 처리
+  const [submitted, setsubmitted] = useState(false);
 
-  // 처음 랜더링 하고, 한 번만 타라
+  // 처음 랜더링하고 한번만 타라
   useEffect(() => {
     boardService
       .get(bid)
@@ -40,20 +34,12 @@ const BoardUpdatePage = () => {
     setBoard({ ...board, [name]: value });
   };
 
-  const saveBoard = () => {
-    let data = {
-      bname: board.bname,
-      btitle: board.btitle,
-      bcontent: board.bcontent,
-    };
-
-    console.log(data);
-
+  const updateBoard = () => {
     boardService
-      .write(data)
-      .then((respose) => {
-        console.log(respose);
-        setSubmitted(true);
+      .update(board)
+      .then((response) => {
+        console.log(response);
+        navigate(`/boards`);
       })
       .catch((error) => {
         console.log(error);
@@ -62,36 +48,39 @@ const BoardUpdatePage = () => {
     /* axios 글 저장 */
   };
 
-  return submitted ? (
-    <Navigate to={{ pathname: "/boards" }} />
-  ) : (
+  const navigate = useNavigate();
+
+  const cancelClick = () => {
+    //window.location.href = "/boards"
+    navigate(`/boards`);
+  };
+
+  return (
     <div>
       <div className="container mt-3">
         <div className="container">
           <div className="row">
             <div className="card col-md-6 offset-md-3 offset-md-3">
-              <h3 className="text-center mt-3">업데이트도 할 수 있어요.</h3>
+              <h3 className="text-center mt-3">업데이트도 할 수 있어요</h3>
               <div className="card-body">
                 <div className="form-group">
                   <label> Type </label>
                   <select placeholder="type" className="form-control">
-                    <option value="1">자유 게시판</option>
+                    <option value="1">자유게시판</option>
                     {/* <option value="2">질문과 답변</option> */}
                   </select>
                 </div>
-
                 <div className="form-group mt-3">
                   <label> Name </label>
                   <input
                     type="text"
-                    placeholder="이름을 넣으시오."
+                    placeholder="이름을 넣으시오"
                     name="bname"
                     className="form-control"
                     value={board.bname}
                     onChange={handleInputChange}
                   />
                 </div>
-
                 <div className="form-group mt-3">
                   <label> Title </label>
                   <input
@@ -102,12 +91,11 @@ const BoardUpdatePage = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-
                 <div className="form-group mt-3 mb-3">
                   <label> Content </label>
 
                   <textarea
-                    placeholder="내용을 적으시오."
+                    placeholder="내용을 적으시오"
                     name="bcontent"
                     className="form-control"
                     value={board.bcontent}
@@ -115,16 +103,17 @@ const BoardUpdatePage = () => {
                     rows="10"
                   />
                 </div>
-
-                <button className="btn btn-success" onClick={saveBoard}>
-                  Save
+                <button className="btn btn-success" onClick={updateBoard}>
+                  업데이트
                 </button>
-
                 <button
                   className="btn btn-danger"
                   style={{ marginLeft: "10px" }}
+                  onClick={() => {
+                    navigate(`/boards`);
+                  }}
                 >
-                  Cancel
+                  취소
                 </button>
               </div>
             </div>
