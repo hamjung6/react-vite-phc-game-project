@@ -5,8 +5,6 @@ import axios from "axios";
 import LegoPagingnation from "../board/LegoPagingnation";
 
 const LegoListPage = () => {
-  const url = "https://sample.bmaster.kro.kr/contacts?pageno=1&pagesize=10";
-
   let initPaging = {
     // ✔ 화면에 보여질 페이지 그룹
     // ✔ 화면에 보여질 첫번째 페이지
@@ -29,7 +27,12 @@ const LegoListPage = () => {
     initBoards();
   }, []);
 
-  const initBoards = () => {
+  const initBoards = (pageno = "1") => {
+    let url =
+      "https://sample.bmaster.kro.kr/contacts?pageno=" +
+      pageno +
+      "&pagesize=10";
+
     axios
       .get(url)
       .then((response) => {
@@ -59,6 +62,7 @@ const LegoListPage = () => {
     e.preventDefault(); // 기존에 링크 동작을 하지 말아라
 
     console.log(e.target.text);
+    initBoards(e.target.text);
 
     let url =
       "https://sample.bmaster.kro.kr/contacts?pageno=" +
