@@ -1,8 +1,8 @@
 import axios from "axios";
 
 export default axios.create({
-  baseURL: "http://192.168.0.10:8282",
+  baseURL: "http://localhost:8282",
   headers: {
-    "Content-Type": "application/json",
+    "Content-type": "application/json",
   },
 });

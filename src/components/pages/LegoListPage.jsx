@@ -1,27 +1,28 @@
 import React, { useEffect, useState } from "react";
 import boardService from "../../services/BoardService";
 import { Link } from "react-router-dom";
-import Pagingnation from "../board/Pagingnation";
+import axios from "axios";
+import LegoPagingnation from "../board/LegoPagingnation";
 
-const BoardListPage = () => {
+const LegoListPage = () => {
+  const url = "https://sample.bmaster.kro.kr/contacts?pageno=1&pagesize=10";
+
+  let initPaging = {
+    // ✔ 화면에 보여질 페이지 그룹
+    // ✔ 화면에 보여질 첫번째 페이지
+    // ✔ 화면에 보여질 마지막 페이지
+    // ✔ 총 페이지 수
+    startPage: 1,
+    endPage: 10,
+    total: 0,
+    prev: false,
+    next: false,
+    pageNum: 1,
+    amount: 10, //고정
+  };
+
   const [boards, setBoards] = useState([]);
-  //http://192.168.0.10:8282/boards/list
-  const [paging, setPaging] = useState(null);
-
-  // 정리하면 아래와 같다.
-
-  // useEffect(() => {
-  //   // 매 렌더링마다 실행
-  // });
-
-  // useEffect(() => {
-  //   // 컴포넌트가 처음 렌더링된 실행
-  // }, []);
-
-  // useEffect(() => {
-  //   // 컴포넌트가 처음 렌더링된 이후 실행
-  //   // a나 b가 변경되어 컴포넌트가 재렌더링된 이후 실행
-  // }, [a, b]);
+  const [paging, setPaging] = useState(initPaging);
 
   useEffect(() => {
     console.log("use Effective 실행");
@@ -29,14 +30,18 @@ const BoardListPage = () => {
   }, []);
 
   const initBoards = () => {
-    boardService
-      .getPagingList()
+    axios
+      .get(url)
       .then((response) => {
         console.log(response);
-        setBoards(response.data.boards);
-        setPaging(response.data.page);
+        setBoards(response.data.contacts);
 
-        console.log(response.data.page);
+        initPaging.pageNum = response.data.pageno;
+        initPaging.total = response.data.totalcount;
+        initPaging.endPage = initPaging.total / response.data.pagesize;
+        initPaging.startPage = 1; //endPage - 9;
+
+        setPaging(initPaging);
       })
       .catch((e) => {
         console.log(e);
@@ -47,31 +52,33 @@ const BoardListPage = () => {
     const { name, value } = e.target;
     console.log(name + "::" + value);
 
-    boardService
-      .remove(value)
-      .then((respose) => {
-        console.log(respose);
-        initBoards();
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    setBoards(boards.filter((board) => board.no !== value));
   };
 
   const onClickPaging = (e) => {
     e.preventDefault(); // 기존에 링크 동작을 하지 말아라
 
-    console.log(e.target.pathname);
-    console.log(e.target.search);
+    console.log(e.target.text);
 
-    boardService
-      .getPagingList(e.target.pathname, e.target.search)
+    let url =
+      "https://sample.bmaster.kro.kr/contacts?pageno=" +
+      e.target.text +
+      "&pagesize=10";
+    axios
+      .get(url)
       .then((response) => {
-        setBoards(response.data.boards);
-        setPaging(response.data.page);
+        console.log(response);
+        setBoards(response.data.contacts);
+
+        initPaging.pageNum = response.data.pageno;
+        initPaging.total = response.data.totalcount;
+        initPaging.endPage = initPaging.total / response.data.pagesize;
+        initPaging.startPage = 1; //endPage - 9;
+
+        setPaging(initPaging);
       })
-      .catch((error) => {
-        console.log(error);
+      .catch((e) => {
+        console.log(e);
       });
   };
 
@@ -107,9 +114,9 @@ const BoardListPage = () => {
                   <tr>
                     <th>번호</th>
                     <th>이름</th>
-                    <th>제목</th>
-                    <th>날짜</th>
-                    <th>히트</th>
+                    <th>전화번호</th>
+                    <th>주소</th>
+                    <th>사진</th>
                     <th className="text-center">삭제</th>
                   </tr>
                 </thead>
@@ -117,22 +124,19 @@ const BoardListPage = () => {
                 <tbody>
                   {boards &&
                     boards.map((board) => (
-                      <tr key={board.bid}>
-                        <td>{board.bid}</td>
-                        <td>{board.bname}</td>
+                      <tr key={board.no}>
+                        <td>{board.no}</td>
+                        <td>{board.name}</td>
+                        <td>{board.tel}</td>
 
+                        <td>{board.address}</td>
                         <td>
-                          <Link to={"/boards/" + board.bid}>
-                            {board.btitle}
-                          </Link>
+                          <img src={board.photo} alt="" />
                         </td>
-
-                        <td>{board.bdate}</td>
-                        <td>{board.bhit}</td>
                         <td className="text-center">
                           <button
                             className="btn btn-success"
-                            value={board.bid}
+                            value={board.no}
                             onClick={deleteBoard}
                           >
                             삭제
@@ -145,17 +149,13 @@ const BoardListPage = () => {
             </div>
             {/* 페이징           */}
             {paging != null ? (
-              <Pagingnation
+              <LegoPagingnation
                 paging={paging}
                 onClickPaging={onClickPaging}
-              ></Pagingnation>
+              ></LegoPagingnation>
             ) : null}
+
             <hr />
-            <Link to="/boards/write">
-              <button type="button" className="btn btn-primary">
-                글쓰기
-              </button>
-            </Link>
           </div>
         </div>
       </div>
@@ -164,4 +164,4 @@ const BoardListPage = () => {
   );
 };
 
-export default BoardListPage;
+export default LegoListPage;

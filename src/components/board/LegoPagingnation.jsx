@@ -3,24 +3,20 @@ import { Link } from "react-router-dom";
 
 //https://getbootstrap.com/docs/5.0/components/pagination/
 
-const Pagingnation = ({ paging, onClickPaging }) => {
+const LegoPagingnation = ({ paging, onClickPaging }) => {
   console.log(paging);
 
   const startQuery =
-    "/boards/list" +
-    "?pageNum=" +
-    (paging.startPage - 1) +
+    "https://sample.bmaster.kro.kr/contacts?pageno=1" +
     "&" +
-    "amount=" +
-    paging.criteria.amount;
+    "pagesize=" +
+    paging.amount;
 
   const endQuery =
-    "/boards/list" +
-    "?pageNum=" +
-    (paging.endPage + 1) +
+    "https://sample.bmaster.kro.kr/contacts?pageno=10" +
     "&" +
-    "amount=" +
-    paging.criteria.amount;
+    "pagesize=" +
+    paging.amount;
 
   console.log(startQuery);
 
@@ -29,16 +25,19 @@ const Pagingnation = ({ paging, onClickPaging }) => {
 
     for (let i = paging.startPage; i <= paging.endPage; i++) {
       console.log(
-        "/list/" + "?pageNum=" + i + "&" + "amount=" + paging.criteria.amount
+        "https://sample.bmaster.kro.kr/contacts?pageno=" +
+          i +
+          "&" +
+          "pagesize=" +
+          paging.amount
       );
 
       const query =
-        "/boards/list" +
-        "?pageNum=" +
+        "https://sample.bmaster.kro.kr/contacts?pageno=" +
         i +
         "&" +
-        "amount=" +
-        paging.criteria.amount;
+        "pagesize=" +
+        paging.amount;
 
       row.push(
         <li className="page-item">
@@ -69,7 +68,7 @@ const Pagingnation = ({ paging, onClickPaging }) => {
         )}
 
         {rendering()}
-        <li className="page-item">
+        {/* <li className="page-item">
           <a className="page-link" href="#">
             1
           </a>
@@ -83,7 +82,7 @@ const Pagingnation = ({ paging, onClickPaging }) => {
           <a className="page-link" href="#">
             3
           </a>
-        </li>
+        </li> */}
 
         {paging.next == true && paging.endPage > 0 && (
           <li className="page-item">
@@ -103,4 +102,4 @@ const Pagingnation = ({ paging, onClickPaging }) => {
   );
 };
 
-export default Pagingnation;
+export default LegoPagingnation;
